@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#7c3aed">
+<title>Cuenta regresiva — ¡El gran día!</title>
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; display:grid; place-items:center; overflow:hidden;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:white;
+    background:radial-gradient(circle at 15% 15%,#ffca3a 0 5%,transparent 20%),
+      radial-gradient(circle at 85% 20%,#ff4d8d 0 6%,transparent 22%),
+      linear-gradient(135deg,#5b21b6,#db2777 55%,#f97316);
+  }
+  .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+  .confetti i{position:absolute;top:-12vh;width:9px;height:17px;border-radius:3px;
+    animation:fall linear infinite;opacity:.9}
+  @keyframes fall{to{transform:translate3d(var(--drift),115vh,0) rotate(900deg)}}
+  .card{
+    width:min(92vw,720px); padding:clamp(24px,5vw,48px); text-align:center;
+    border:1px solid #ffffff66; border-radius:30px;
+    background:#32105acc; box-shadow:0 22px 70px #26043f88; backdrop-filter:blur(8px);
+    position:relative; z-index:1;
+  }
+  .party{font-size:clamp(2rem,7vw,4rem);letter-spacing:.12em}
+  h1{font-size:clamp(2rem,7vw,4rem);line-height:1.05;margin:12px 0;color:#ffe66d}
+  .sub{font-size:clamp(1.25rem,4vw,2rem);font-weight:900;letter-spacing:.06em;margin:10px 0 24px}
+  .timer{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(7px,2vw,16px)}
+  .unit{padding:clamp(10px,3vw,20px) 4px;border-radius:18px;background:#ffffff20;
+    border:1px solid #ffffff55}
+  .number{font-variant-numeric:tabular-nums;font-size:clamp(1.7rem,7vw,3.7rem);font-weight:900;line-height:1.1}
+  .label{font-size:clamp(.65rem,2vw,.95rem);font-weight:800;letter-spacing:.08em;margin-top:8px}
+  .date{margin:25px 0 0;font-size:clamp(1rem,3vw,1.3rem);font-weight:700}
+  .footer{margin-top:18px;font-size:.95rem;opacity:.9}
+  @media(max-width:390px){.timer{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="confetti" id="confetti"></div>
+<main class="card">
+  <div class="party">🎉 🎈 🥳</div>
+  <h1>¡FALTAN!</h1>
+  <div class="sub">PARA EL GRAN DÍA</div>
+  <section class="timer" aria-live="polite">
+    <div class="unit"><div class="number" id="days">--</div><div class="label">DÍAS</div></div>
+    <div class="unit"><div class="number" id="hours">--</div><div class="label">HORAS</div></div>
+    <div class="unit"><div class="number" id="minutes">--</div><div class="label">MINUTOS</div></div>
+    <div class="unit"><div class="number" id="seconds">--</div><div class="label">SEGUNDOS</div></div>
+  </section>
+  <div class="date">📅 27 DE NOVIEMBRE · 05:20 HS</div>
+  <div class="footer" id="message">¡Que empiece la cuenta regresiva! 🎊</div>
+</main>
+<script>
+  // Hora local de Argentina (UTC−3): 27/11/2026 a las 05:20.
+  const target = new Date('2026-11-27T05:20:00-03:00').getTime();
+  const ids = ['days','hours','minutes','seconds'];
+  function update(){
+    let diff = Math.max(0, target - Date.now());
+    const values = [
+      Math.floor(diff / 86400000),
+      Math.floor((diff % 86400000) / 3600000),
+      Math.floor((diff % 3600000) / 60000),
+      Math.floor((diff % 60000) / 1000)
+    ];
+    ids.forEach((id,i)=>document.getElementById(id).textContent=String(values[i]).padStart(2,'0'));
+    if(target-Date.now()<=0) document.getElementById('message').textContent='¡LLEGÓ EL GRAN DÍA! 🎉🥳';
+  }
+  update(); setInterval(update,1000);
+  const colors=['#ffe66d','#4dd0e1','#ff6b9a','#a3e635','#ffffff'];
+  const layer=document.getElementById('confetti');
+  for(let i=0;i<65;i++){
+    const p=document.createElement('i');
+    p.style.left=Math.random()*100+'%';
+    p.style.background=colors[i%colors.length];
+    p.style.animationDuration=(5+Math.random()*8)+'s';
+    p.style.animationDelay=(-Math.random()*12)+'s';
+    p.style.setProperty('--drift',(Math.random()*180-90)+'px');
+    layer.appendChild(p);
+  }
+</script>
+</body>
+</html>
